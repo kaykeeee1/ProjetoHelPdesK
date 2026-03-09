@@ -1,30 +1,29 @@
 const db = require('../models/db')
 
 exports.createTicket = (req, res) => {
+ const { title, description, priority } = req.body
+  const user_id = req.userId
 
-  const { title, description, user_id } = req.body
+ const sql = "INSERT INTO tickets (title, description, priority, user_id) VALUES (?, ?, ?, ?)"
 
-  const sql = "INSERT INTO tickets (title, description, user_id) VALUES (?, ?, ?)"
-
-  db.query(sql, [title, description, user_id], (err, result) => {
+  db.query(sql, [title, description, priority || 'media', user_id], (err, result) => {
 
     if (err) {
       return res.status(500).json(err)
     }
 
-    res.json({
-      message: "Chamado criado com sucesso"
-    })
+    res.json({ message: "Chamado criado com sucesso" })
 
   })
-
 }
 
 exports.getTickets = (req, res) => {
 
-  const sql = "SELECT * FROM tickets"
+  const user_id = req.userId
 
-  db.query(sql, (err, result) => {
+  const sql = "SELECT * FROM tickets WHERE user_id = ?"
+
+  db.query(sql, [user_id], (err, result) => {
 
     if (err) {
       return res.status(500).json(err)
@@ -33,7 +32,6 @@ exports.getTickets = (req, res) => {
     res.json(result)
 
   })
-
 }
 
 exports.updateStatus = (req, res) => {
@@ -49,9 +47,71 @@ exports.updateStatus = (req, res) => {
       return res.status(500).json(err)
     }
 
-    res.json({
-      message: "Status do chamado atualizado"
-    })
+    res.json({ message: "Status atualizado" })
+
+  })
+}
+
+exports.updateTicket = (req, res) => {
+
+  const { id } = req.params
+  const { title, description } = req.body
+  const user_id = req.userId
+
+  const sql = "UPDATE tickets SET title = ?, description = ? WHERE id = ? AND user_id = ?"
+
+  db.query(sql, [title, description, id, user_id], (err, result) => {
+
+    if (err) {
+      return res.status(500).json(err)
+    }
+
+    res.json({ message: "Chamado atualizado" })
+
+  })
+}
+
+exports.deleteTicket = (req, res) => {
+
+  const { id } = req.params
+  const user_id = req.userId
+
+  const sql = "DELETE FROM tickets WHERE id = ? AND user_id = ?"
+
+  db.query(sql, [id, user_id], (err, result) => {
+
+    if (err) {
+      return res.status(500).json(err)
+    }
+
+    res.json({ message: "Chamado deletado" })
+
+  })
+
+}
+
+exports.getStats = (req, res) => {
+
+  const user_id = req.userId
+
+  const sql = `
+    SELECT 
+COUNT(*) as total,
+SUM(status = 'aberto') as abertos,
+SUM(status = 'em_andamento') as em_andamento,
+SUM(status = 'resolvido') as resolvidos,
+SUM(priority = 'critica') as criticos
+FROM tickets
+WHERE user_id = ?
+  `
+
+  db.query(sql, [user_id], (err, result) => {
+
+    if (err) {
+      return res.status(500).json(err)
+    }
+
+    res.json(result[0])
 
   })
 

@@ -1,5 +1,6 @@
 const db = require('../models/db')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 exports.register = async (req, res) => {
 
@@ -61,14 +62,21 @@ exports.login = (req, res) => {
       return res.status(401).json({ message: "Senha incorreta" })
     }
 
-    res.json({
-      message: "Login realizado com sucesso",
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email
-      }
-    })
+    const token = jwt.sign(
+  { id: user.id },
+  "segredo_super_secreto",
+  { expiresIn: "1d" }
+)
+
+res.json({
+  message: "Login realizado com sucesso",
+  token: token,
+  user: {
+    id: user.id,
+    name: user.name,
+    email: user.email
+  }
+})
 
   })
 
