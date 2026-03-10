@@ -1,6 +1,7 @@
 import { useState } from "react"
 import api from "../services/api"
 import { useNavigate } from "react-router-dom"
+import Layout from "../components/Layout"
 
 function CreateTicket() {
 
@@ -37,7 +38,7 @@ function CreateTicket() {
 
   return (
 
-    <div>
+    <Layout>
 
       <h1>Criar Ticket</h1>
 
@@ -64,11 +65,13 @@ function CreateTicket() {
           <option value="alta">Alta</option>
         </select>
 
-        <button type="submit">Criar Ticket</button>
+        <button type="submit">
+          Criar Ticket
+        </button>
 
       </form>
 
-    </div>
+    </Layout>
 
   )
 

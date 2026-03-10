@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
 import api from "../services/api"
+import Layout from "../components/Layout"
 import { useNavigate } from "react-router-dom"
 
 function Tickets() {
 
   const [tickets, setTickets] = useState([])
-
-const navigate = useNavigate()
+  const navigate = useNavigate()
 
   async function loadTickets() {
 
@@ -32,31 +32,28 @@ const navigate = useNavigate()
 
   return (
 
-    <div>
+    <Layout>
 
       <h1>Tickets</h1>
 
       <button onClick={() => navigate("/create-ticket")}>
-  Novo Ticket
-</button>
+        Novo Ticket
+      </button>
 
       {tickets.map(ticket => (
 
         <div key={ticket.id}>
 
           <h3>{ticket.title}</h3>
-
           <p>{ticket.description}</p>
-
           <p>Status: {ticket.status}</p>
-
           <p>Prioridade: {ticket.priority}</p>
 
         </div>
 
       ))}
 
-    </div>
+    </Layout>
 
   )
 

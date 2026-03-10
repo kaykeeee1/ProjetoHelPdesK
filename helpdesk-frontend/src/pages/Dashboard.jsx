@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import api from "../services/api"
+import Layout from "../components/Layout"
 
 function Dashboard() {
 
@@ -29,7 +30,7 @@ function Dashboard() {
 
   return (
 
-    <div>
+    <Layout>
 
       <h1>Dashboard</h1>
 
@@ -37,7 +38,7 @@ function Dashboard() {
       <p>Tickets em andamento: {stats.inProgress}</p>
       <p>Tickets Resolvidos: {stats.closed}</p>
 
-    </div>
+    </Layout>
 
   )
 
